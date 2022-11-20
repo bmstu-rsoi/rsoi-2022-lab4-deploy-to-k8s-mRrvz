@@ -1,0 +1,238 @@
+apiVersion: v1
+items:
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: gateway
+      name: gateway
+    spec:
+      ports:
+        - name: "80"
+          port: 80
+          targetPort: 80
+      selector:
+        io.kompose.service: gateway
+    status:
+      loadBalancer: {}
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: ticket
+      name: ticket
+    spec:
+      ports:
+        - name: "80"
+          port: 80
+          targetPort: 80
+      selector:
+        io.kompose.service: ticket
+    status:
+      loadBalancer: {}
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: flight
+      name: flight
+    spec:
+      ports:
+        - name: "80"
+          port: 80
+          targetPort: 80
+      selector:
+        io.kompose.service: flight
+    status:
+      loadBalancer: {}
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: postgres
+      name: postgres
+    spec:
+      ports:
+        - name: "5432"
+          port: 5432
+          targetPort: 5432
+      selector:
+        io.kompose.service: postgres
+    status:
+      loadBalancer: {}
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: bonus
+      name: bonus
+    spec:
+      ports:
+        - name: "80"
+          port: 80
+          targetPort: 80
+      selector:
+        io.kompose.service: bonus
+    status:
+      loadBalancer: {}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: gateway
+      name: gateway
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          io.kompose.service: gateway
+      strategy: {}
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            io.kompose.service: gateway
+        spec:
+          containers:
+            - env:
+                - name: PORT
+                  value: "8080"
+              image: alexeymrvz/gateway
+              name: gateway
+              ports:
+                - containerPort: 80
+              resources: {}
+          restartPolicy: Always
+    status: {}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: ticket
+      name: ticket
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          io.kompose.service: ticket
+      strategy: {}
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            io.kompose.service: ticket
+        spec:
+          containers:
+            - env:
+                - name: PORT
+                  value: "8070"
+              image: alexeymrvz/ticket
+              name: loyalty
+              ports:
+                - containerPort: 80
+              resources: {}
+          restartPolicy: Always
+    status: {}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: flight
+      name: flight
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          io.kompose.service: flight
+      strategy: {}
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            io.kompose.service: flight
+        spec:
+          containers:
+            - env:
+                - name: PORT
+                  value: "8060"
+              image: alexeymrvz/flight
+              name: flight
+              ports:
+                - containerPort: 80
+              resources: {}
+          restartPolicy: Always
+    status: {}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: postgres
+      name: postgres
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          io.kompose.service: postgres
+      strategy: {}
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            io.kompose.service: postgres
+        spec:
+          containers:
+            - env:
+                - name: POSTGRES_DB
+                  value: postgres
+                - name: POSTGRES_PASSWORD
+                  value: postgres
+                - name: POSTGRES_USER
+                  value: postgres
+              image: library/postgres:13
+              name: postgres
+              ports:
+                - containerPort: 5432
+              resources: {}
+          restartPolicy: Always
+    status: {}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: bonus
+      name: bonus
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          io.kompose.service: bonus
+      strategy: {}
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            io.kompose.service: bonus
+        spec:
+          containers:
+            - env:
+                - name: PORT
+                  value: "8050"
+              image: alexeymrvz/bonus
+              name: bonus
+              ports:
+                - containerPort: 80
+              resources: {}
+          restartPolicy: Always
+    status: {}
+kind: List
+metadata: {}

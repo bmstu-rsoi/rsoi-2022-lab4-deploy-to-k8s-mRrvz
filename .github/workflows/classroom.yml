@@ -2,6 +2,13 @@ name: GitHub Classroom Workflow
 on:
   push:
     branches: [ master ]
+
+env:
+  K8S_TOKEN: ${{ secrets.K8S_TOKEN }}
+  K8S_URL: ${{ secrets.K8S_URL }}
+  DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+  DOCKER_USER: ${{ secrets.DOCKER_USER }}
+
 jobs:
   build:
     name: Autograding
@@ -13,7 +20,21 @@ jobs:
 
       - uses: docker/setup-buildx-action@v2
 
-      # TODO build, publish to docker hub, deploy to k8s
+      - name: Build the stack
+        run: docker-compose build
+      
+      - name: Push the stack
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker-compose push
+
+      - name: k8s deploy
+        run: |
+          kubectl config set-cluster lab4-klaster --server="$K8S_URL" --insecure-skip-tls-verify=true
+          kubectl config set-credentials admin --token="$K8S_TOKEN"
+          kubectl config set-context default --cluster=lab4-klaster --user=admin
+          kubectl config use-context default
+          kubectl apply -f k8s.yml
 
       - name: Run API Tests
         uses: matt-ball/newman-action@master
